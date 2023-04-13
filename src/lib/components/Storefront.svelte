@@ -2,7 +2,7 @@
 	import { createStorefrontClient } from '@shopify/hydrogen-react';
 
 	import { hasContext, setContext } from 'svelte';
-	import { request } from 'sveltefront/helpers/request';
+	import { requestPrefillShopifyClient } from 'sveltefront/helpers/request';
 
 	export let storeDomain: string;
 	export let publicStorefrontToken: string;
@@ -21,7 +21,7 @@
 	});
 
 	const sveltefront = {
-		request: async <T = any>(gql: string) => await request<T>(gql, client)
+		request: requestPrefillShopifyClient(client)
 	};
 
 	setContext('sveltefront', sveltefront);

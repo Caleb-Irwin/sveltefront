@@ -3,7 +3,7 @@
 	import { PUBLIC_STORE_DOMAIN, PUBLIC_PUBLIC_STOREFRONT_TOKEN } from '$env/static/public';
 	import { browser } from '$app/environment';
 	import { gql } from 'sveltefront/helpers/gql';
-	const shopName = gql`
+	const shopName = gql<{ shop: { name: string } }>`
 		{
 			shop {
 				name
