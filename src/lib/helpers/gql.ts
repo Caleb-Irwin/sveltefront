@@ -1,7 +1,7 @@
-export const gql = <DataType>(
+export const gql = <DataType, Vars extends Record<string, string | number> = Record<string, never>>(
 	chunks: TemplateStringsArray,
 	...variables: unknown[]
-): GQL<DataType> => {
+): GQL<DataType, Vars> => {
 	const query = /* from graphql-request */ chunks.reduce(
 		(acc, chunk, index) => `${acc}${chunk}${index in variables ? String(variables[index]) : ``}`,
 		``
@@ -11,8 +11,11 @@ export const gql = <DataType>(
 };
 
 export type extractGeneric<Type> = Type extends GQL<infer DataType> ? DataType : never;
+export type extractSecondGeneric<Type> = Type extends GQL<unknown, infer Vars> ? Vars : never;
 
-export interface GQL<DataType = unknown> {
+export interface GQL<
+	DataType = unknown,
+	Vars extends Record<string, string | number> = Record<string, never>
+> {
 	readonly query: string;
-	readonly vars?: { [varName: string]: string };
 }

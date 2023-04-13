@@ -1,16 +1,16 @@
 import type { createStorefrontClient } from '@shopify/hydrogen-react';
-import type { GQL, extractGeneric } from './gql';
+import type { GQL, extractGeneric, extractSecondGeneric } from './gql';
 
 export async function request<T extends GQL>(
 	gql: T,
-	variables: { [key: string]: string | number },
+	variables: extractSecondGeneric<T>,
 	shopifyClient: ReturnType<typeof createStorefrontClient>,
 	customFetch?: typeof fetch
 ): Promise<ShopifyReturn<extractGeneric<T>>> {
 	const response = await (customFetch ?? fetch)(shopifyClient.getStorefrontApiUrl(), {
 		body: JSON.stringify({
 			query: gql.query,
-			variables
+			variables: variables ?? {}
 		}),
 		headers: shopifyClient.getPublicTokenHeaders(),
 		method: 'POST'
@@ -22,7 +22,7 @@ export async function request<T extends GQL>(
 }
 
 export function requestPrefillShopifyClient(client: ReturnType<typeof createStorefrontClient>) {
-	return async <T extends GQL>(gql: T, variables: { [key: string]: string | number } = {}) =>
+	return async <T extends GQL>(gql: T, variables: extractSecondGeneric<T>) =>
 		await request(gql, variables, client);
 }
 export interface ShopifyReturn<T = unknown> {

@@ -6,7 +6,7 @@
 	import { browser } from '$app/environment';
 	import { gql } from 'sveltefront/helpers/gql';
 
-	const shopName = gql<{ products: { nodes: Partial<Product>[] } }>`
+	const shopName = gql<{ products: { nodes: Partial<Product>[] } }, { limit: number }>`
 		query test($limit: Int = 5) {
 			products(first: $limit) {
 				nodes {
@@ -27,12 +27,12 @@
 	<div class="">
 		<h1>Storefront Component</h1>
 		{#if browser}
-			{#await sveltefront.request(shopName, { limit: 20 })}
+			{#await sveltefront.request(shopName, { limit: 25 })}
 				<p>Loading...</p>
 			{:then value}
 				<ul>
 					{#each value.data?.products.nodes ?? [] as product}
-						<li>{product.handle} ({product.id}): {product.title} <br /></li>{/each}
+						<li>{product.handle} ({product.id}): {product.title}</li>{/each}
 				</ul>
 			{:catch error}
 				<p>{JSON.stringify(error)}</p>
